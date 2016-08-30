@@ -1,11 +1,20 @@
 var snake;
 var scl = 20;
 var food;
+var fr = 10;
+var img;
+
+function preload() {
+  img = loadImage("pic.jpg");
+  mySound = loadSound('test2.mp3');
+}
 
 function setup() {
   createCanvas(600, 600);
+  image(img, 0, 0);
+  mySound.setVolume(0.5);
+  mySound.play();
   snake = new Snake();
-  frameRate(30);
   pickLocation();
 }
 
@@ -17,15 +26,17 @@ function pickLocation(){
 }
 
 function draw() {
-  background(51);
+  frameRate(fr);
+  background(img);
   snake.death();
   snake.update();
   snake.show();
   
+  
  if (snake.eat(food)){
    pickLocation();
+   fr += 10;
  }
-  
   fill(255, 0, 100);
   rect(food.x, food.y, scl, scl);
 }
@@ -48,7 +59,7 @@ function keyPressed(){
 function Snake() {
   this.x = 0;
   this.y = 0;
-  this.xspeed = 2;
+  this.xspeed = 0;
   this.yspeed = 0;
   this.total = 0;
   this.tail = [];
@@ -64,6 +75,8 @@ function Snake() {
       }
   }
   
+  this
+  
   this.dir = function(x, y){
     this.xspeed = x;
     this.yspeed = y;
@@ -77,6 +90,7 @@ function Snake() {
         console.log('starting over');
         this.total = 0;
         this.tail = [];
+        fr = 10;
       }
     }
   }
@@ -88,8 +102,8 @@ function Snake() {
     }
     this.tail[this.total-1] = createVector(this.x, this.y);
     
-    this.x = this.x + this.xspeed;
-    this.y = this.y + this.yspeed;
+    this.x = this.x + this.xspeed * scl;
+    this.y = this.y + this.yspeed * scl;
     
     this.x = constrain(this.x, 0, width-scl);
     this.y = constrain(this.y, 0, height-scl);
@@ -97,6 +111,7 @@ function Snake() {
   
   this.show = function() {
     for (var i = 0; i<this.tail.length; i++){
+      fill(255);
       rect(this.tail[i].x, this.tail[i].y, scl, scl)
     }
     fill(255);
